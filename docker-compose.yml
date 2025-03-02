@@ -1,0 +1,15 @@
+services:
+  postgres:
+    container_name: db-course-postgres
+    image: postgres:17.4-alpine3.21
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: supercoolpwd
+    volumes:
+      - db_data:/var/lib/postgresql/data:rw
+    ports:
+      - "5432:5432"
+
+volumes:
+  db_data:
+
