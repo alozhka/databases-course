@@ -42,5 +42,6 @@ CREATE TABLE IF NOT EXISTS "ticket"
     ticket_id      BIGSERIAL NOT NULL PRIMARY KEY,
     performance_id BIGSERIAL NOT NULL REFERENCES performance (performance_id),
     cost           INT CHECK ( cost > 0 ),
-    place          SMALLINT  NOT NULL UNIQUE CHECK ( place > 0 )
+    place          SMALLINT  NOT NULL CHECK ( place > 0 ),
+    UNIQUE (performance_id, place)
 );
