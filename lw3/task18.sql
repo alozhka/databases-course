@@ -34,13 +34,13 @@ CREATE TABLE IF NOT EXISTS "performance"
     performance_id BIGSERIAL NOT NULL PRIMARY KEY,
     theatre_id     BIGSERIAL NOT NULL REFERENCES theatre (theatre_id),
     play_id        BIGSERIAL NOT NULL REFERENCES play (play_id),
-    time           TIMESTAMP NOT NULL,
-    ticket_cost    INT CHECK ( ticket_cost > 0 )
+    time           TIMESTAMP NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "ticket"
 (
     ticket_id      BIGSERIAL NOT NULL PRIMARY KEY,
     performance_id BIGSERIAL NOT NULL REFERENCES performance (performance_id),
-    cost           INT CHECK ( cost > 0 )
+    cost           INT CHECK ( cost > 0 ),
+    place          SMALLINT  NOT NULL UNIQUE CHECK ( place > 0 )
 );
