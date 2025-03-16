@@ -40,9 +40,9 @@ CREATE TABLE IF NOT EXISTS competition_age_group
 
 CREATE TABLE IF NOT EXISTS performance
 (
-    competition_age_group BIGSERIAL NOT NULL REFERENCES competition_age_group (competition_age_group_id),
+    competition_age_group_id BIGSERIAL NOT NULL REFERENCES competition_age_group (competition_age_group_id),
     athlete_id            BIGSERIAL NOT NULL REFERENCES athlete (athlete_id),
     place                 SMALLINT  NOT NULL CHECK ( place > 0 ),
     score                 INT,
-    PRIMARY KEY (competition_age_group, athlete_id)
+    PRIMARY KEY (competition_age_group_id, athlete_id)
 );
