@@ -1,0 +1,2 @@
+CREATE DATABASE drug_store_db;
+CREATE ROLE postgres LOGIN SUPERUSER;
