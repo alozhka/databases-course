@@ -14,9 +14,9 @@ WHERE m.name = 'Кордерон'
 SELECT m.*
 FROM medicine m
          JOIN production p ON m.id_medicine = p.id_medicine
-         JOIN "order" o ON p.id_production = o.id_production
-         LEFT JOIN company c ON p.id_company = c.id_company AND o.date < '2019-01-25'
-where c.name = 'Фарма';
+         LEFT JOIN company c ON p.id_company = c.id_company
+WHERE c.name = 'Фарма'
+  AND p.id_production NOT IN (SELECT id_production FROM "order" o WHERE o.date < '2019-01-25');
 
 -- 4. Дать минимальный и максимальный баллы лекарств каждой фирмы, которая оформила не менее 120 заказов.
 SELECT c.name AS company_name, max(p.rating) AS max_rating, min(p.rating) AS min_rating
@@ -29,11 +29,11 @@ HAVING count(o) > 120;
 -- 5. Дать списки сделавших заказы аптек по всем дилерам компании “AstraZeneca”.
 -- Если у дилера нет заказов, в названии аптеки проставить NULL.
 
-SELECT d.name AS dealer_name, d.phone AS dealer_phone, ph.name as pharmacy_name
+SELECT DISTINCT d.name AS dealer_name, d.phone AS dealer_phone, ph.name as pharmacy_name
 FROM company c
          JOIN public.dealer d ON c.id_company = d.id_company
-         LEFT JOIN public."order" o ON d.id_dealer = o.id_dealer
-         LEFT JOIN pharmacy ph ON o.id_pharmacy = ph.id_pharmacy
+         FULL JOIN public."order" o ON d.id_dealer = o.id_dealer
+         FULL JOIN pharmacy ph ON o.id_pharmacy = ph.id_pharmacy
 WHERE c.name = 'AstraZeneca';
 
 
@@ -52,14 +52,18 @@ ROLLBACK TRANSACTION;
 -- 7. Добавить необходимые индексы.
 BEGIN TRANSACTION;
 
-CREATE INDEX idx_dealer_company ON public.dealer(id_company);
-CREATE INDEX idx_production_company ON public.production(id_company);
-CREATE INDEX idx_production_medicine ON public.production(id_medicine);
-CREATE INDEX idx_order_production ON public."order"(id_production);
-CREATE INDEX idx_order_dealer ON public."order"(id_dealer);
-CREATE INDEX idx_order_pharmacy ON public."order"(id_pharmacy);
-CREATE INDEX idx_pharmacy_name ON public.pharmacy(name);
-CREATE INDEX idx_medicine_name ON public.medicine(name);
-CREATE INDEX idx_company_name ON public.company(name);
+CREATE INDEX idx_dealer_company ON dealer (id_company);
+
+CREATE INDEX idx_production_company ON production (id_company);
+CREATE INDEX idx_production_medicine ON production (id_medicine);
+
+CREATE INDEX idx_order_production ON "order" (id_production);
+CREATE INDEX idx_order_dealer ON "order" (id_dealer);
+CREATE INDEX idx_order_pharmacy ON "order" (id_pharmacy);
+CREATE INDEX idx_order_date ON "order" (date);
+
+CREATE INDEX idx_pharmacy_name ON pharmacy (name);
+CREATE INDEX idx_medicine_name ON medicine (name);
+CREATE INDEX idx_company_name ON company (name);
 
 END TRANSACTION;
